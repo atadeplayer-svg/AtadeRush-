@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AtadeRush - Un site fun et utile !</title>
+    <!-- On utilise Tailwind CSS pour un style moderne et rapide -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Icônes pour les jeux -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            /* Couleurs par défaut pour le thème 'clair' */
+            --bg-color: #f3f4f6;
+            --text-color: #1f2937;
+            --card-bg: #ffffff;
+            --accent-color: #8b5cf6;
+            --border-color: #e5e7eb;
+        }
+
+        /* Styles pour les thèmes */
+        body[data-theme="gold"] {
+            --bg-color: #FFD700;
+            --text-color: #3b2f00;
+            --card-bg: #fffbe6;
+            --accent-color: #b8860b;
+            --border-color: #f7d54b;
+        }
+        body[data-theme="cosmos"] {
+            --bg-color: #0d1a2f;
+            --text-color: #e0e7ff;
+            --card-bg: #1a2a47;
+            --accent-color: #4a90e2;
+            --border-color: #2b3d5b;
+            background-image: url('https://placehold.co/1920x1080/0d1a2f/ffffff?text=Espace');
+            background-size: cover;
+            background-position: center;
+        }
+        body[data-theme="foret"] {
+            --bg-color: #0b1a0d;
+            --text-color: #dbe4d6;
+            --card-bg: #182b1c;
+            --accent-color: #4CAF50;
+            --border-color: #2c422c;
+            background-image: url('https://placehold.co/1920x1080/0b1a0d/ffffff?text=Forêt');
+            background-size: cover;
+            background-position: center;
+        }
+        body[data-theme="neon-bleu-rose"] {
+            --bg-color: #0a0a0d;
+            --text-color: #e0e7ff;
+            --card-bg: #111115;
+            --accent-color: #ff00ff;
+            --border-color: #3a005f;
+            background-image: linear-gradient(45deg, #00ffff, #ff00ff);
+        }
+        body[data-theme="neon-orange-violet"] {
+            --bg-color: #0a0a0d;
+            --text-color: #e0e7ff;
+            --card-bg: #111115;
+            --accent-color: #ff4500;
+            --border-color: #4b0082;
+            background-image: linear-gradient(45deg, #ff4500, #9400d3);
+        }
+        body[data-theme="punk"] {
+            --bg-color: #121212;
+            --text-color: #e0e7ff;
+            --card-bg: #222222;
+            --accent-color: #ff0000;
+            --border-color: #8b0000;
+            background-image: url('https://placehold.co/1920x1080/121212/ffffff?text=Punk');
+            background-size: cover;
+            background-position: center;
+        }
+        body[data-theme="cyberpunk"] {
+            --bg-color: #0d0113;
+            --text-color: #00d2d2;
+            --card-bg: #1a021c;
+            --accent-color: #ff007b;
+            --border-color: #2b0430;
+            background-image: url('https://placehold.co/1920x1080/0d0113/ffffff?text=Cyberpunk');
+            background-size: cover;
+            background-position: center;
+        }
+        body[data-theme="blanc-et-violet"] {
+            --bg-color: #f5f5ff;
+            --text-color: #2c0738;
+            --card-bg: #ffffff;
+            --accent-color: #7b29a8;
+            --border-color: #e0ccf0;
+        }
+        body[data-theme="blanc-et-bleu-ciel"] {
+            --bg-color: #f5fcff;
+            --text-color: #072c38;
+            --card-bg: #ffffff;
+            --accent-color: #297ba8;
+            --border-color: #cce0f0;
+        }
+        body[data-theme="blanc-et-orange"] {
+            --bg-color: #fff9f5;
+            --text-color: #381b07;
+            --card-bg: #ffffff;
+            --accent-color: #a87b29;
+            --border-color: #f0e0cc;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.5s, color 0.5s;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .theme-btn {
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            background-color: transparent;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .theme-btn.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        /* Styles spécifiques aux jeux */
+        #hangman-word span, #morpion-board button {
+            transition: transform 0.2s;
+        }
+        #hangman-word span.guessed, #morpion-board button.filled {
+            transform: scale(1.1);
+        }
+
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+
+    <header class="bg-white dark:bg-gray-800 shadow-md py-4">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl font-bold">AtadeRush 🎉</h1>
+            <p class="text-lg mt-2">Bienvenue dans ton espace de divertissement et d'organisation.</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8 space-y-8">
+
+        <!-- Section de personnalisation -->
+        <section id="personnalisation" class="card rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-4">🎨 Outils de Personnalisation</h2>
+            <p class="mb-4 text-sm">Choisis un thème pour changer l'apparence du site.</p>
+            <div class="flex flex-wrap gap-2">
+                <button class="theme-btn px-4 py-2 rounded-full font-medium text-sm" data-theme="gold">Gold</button>
+                <button class="theme-btn px-4 py-2 rounded-full font-medium text-sm" data-theme="cosmos">Cosmos</button>
+                <button class="theme-btn px-4 py-2 rounded-full font-medium text-sm" data-theme="foret">Forêt</button>
+                <button class="theme-btn px-4 py-2 rounded-full font-medium text-sm" data-theme="neon-bleu-rose">Néon (bleu-rose)</button>
+                <button class="theme-btn px-4 py-2 rounded-full font-medium text-sm" data-theme="neon-orange-violet">Néon (orange-violet)</button>
+                <button class="theme-btn px-4 py-2 rounded-full font-medium text-sm" data-theme="punk">Punk</button>
+                <button class="theme-btn px-4 py-2 rounded-full font-medium text-sm" data-theme="cyberpunk">Cyberpunk</button>
+                <button class="theme-btn px-4 py-2 rounded-full font-medium text-sm" data-theme="blanc-et-violet">Blanc & Violet</button>
+                <button class="theme-btn px-4 py-2 rounded-full font-medium text-sm" data-theme="blanc-et-bleu-ciel">Blanc & Bleu</button>
+                <button class="theme-btn px-4 py-2 rounded-full font-medium text-sm" data-theme="blanc-et-orange">Blanc & Orange</button>
+            </div>
+        </section>
+
+        <!-- Section des mini-jeux -->
+        <section id="mini-jeux" class="card rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-4">🕹️ Mini-jeux</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                <!-- Pendu -->
+                <div id="hangman" class="card p-4 rounded-lg text-center">
+                    <h3 class="text-xl font-semibold mb-2">Pendu 🔪</h3>
+                    <p class="mb-4">Devine le mot secret avant d'être pendu !</p>
+                    <div class="text-3xl font-mono tracking-widest mb-4" id="hangman-word"></div>
+                    <div class="text-sm mb-4" id="hangman-wrong-letters">Lettres incorrectes : </div>
+                    <div class="relative w-40 h-40 mx-auto mb-4">
+                        <!-- Le dessin du pendu sera ici -->
+                        <div id="hangman-drawing" class="absolute inset-0"></div>
+                    </div>
+                    <input type="text" id="hangman-input" maxlength="1" placeholder="Tape une lettre..." class="w-full px-4 py-2 rounded-md border text-center uppercase text-gray-800 dark:text-gray-800">
+                    <button id="hangman-guess-btn" class="btn w-full mt-2 px-4 py-2 rounded-md font-medium">Deviner</button>
+                    <p id="hangman-message" class="mt-4 font-semibold"></p>
+                    <button id="hangman-new-game-btn" class="btn w-full mt-2 px-4 py-2 rounded-md font-medium hidden">Nouvelle partie</button>
+                </div>
+
+                <!-- Morpion -->
+                <div id="morpion" class="card p-4 rounded-lg text-center">
+                    <h3 class="text-xl font-semibold mb-2">Morpion ❌⭕</h3>
+                    <p class="mb-4">Alignes-en 3 pour gagner !</p>
+                    <div id="morpion-board" class="grid grid-cols-3 w-48 h-48 mx-auto gap-2 mb-4">
+                        <button class="w-16 h-16 text-4xl font-bold rounded-md border-2 border-gray-400 focus:outline-none"></button>
+                        <button class="w-16 h-16 text-4xl font-bold rounded-md border-2 border-gray-400 focus:outline-none"></button>
+                        <button class="w-16 h-16 text-4xl font-bold rounded-md border-2 border-gray-400 focus:outline-none"></button>
+                        <button class="w-16 h-16 text-4xl font-bold rounded-md border-2 border-gray-400 focus:outline-none"></button>
+                        <button class="w-16 h-16 text-4xl font-bold rounded-md border-2 border-gray-400 focus:outline-none"></button>
+                        <button class="w-16 h-16 text-4xl font-bold rounded-md border-2 border-gray-400 focus:outline-none"></button>
+                        <button class="w-16 h-16 text-4xl font-bold rounded-md border-2 border-gray-400 focus:outline-none"></button>
+                        <button class="w-16 h-16 text-4xl font-bold rounded-md border-2 border-gray-400 focus:outline-none"></button>
+                        <button class="w-16 h-16 text-4xl font-bold rounded-md border-2 border-gray-400 focus:outline-none"></button>
+                    </div>
+                    <p id="morpion-message" class="mt-4 font-semibold">C'est au tour de X</p>
+                    <button id="morpion-new-game-btn" class="btn w-full mt-2 px-4 py-2 rounded-md font-medium hidden">Nouvelle partie</button>
+                </div>
+
+                <!-- Trouve le chiffre -->
+                <div id="guess-number" class="card p-4 rounded-lg text-center">
+                    <h3 class="text-xl font-semibold mb-2">Trouve le Chiffre 🕵️‍♂️</h3>
+                    <p class="mb-4">Devine le nombre secret entre 1 et 100.</p>
+                    <input type="number" id="guess-input" placeholder="Ton chiffre..." class="w-full px-4 py-2 rounded-md border text-center text-gray-800 dark:text-gray-800">
+                    <button id="guess-btn" class="btn w-full mt-2 px-4 py-2 rounded-md font-medium">Deviner</button>
+                    <p id="guess-message" class="mt-4 font-semibold"></p>
+                    <button id="guess-new-game-btn" class="btn w-full mt-2 px-4 py-2 rounded-md font-medium hidden">Nouvelle partie</button>
+                </div>
+
+                <!-- Cookie Clicker -->
+                <div id="cookie-clicker" class="card p-4 rounded-lg text-center">
+                    <h3 class="text-xl font-semibold mb-2">Cookie Clicker 🍪</h3>
+                    <p class="mb-4">Clic, clic, clic ! Fais exploser ton score de cookies.</p>
+                    <p id="cookie-count" class="text-5xl font-bold my-4">0</p>
+                    <button id="cookie-btn" class="text-9xl mb-4 transform transition-transform duration-150 active:scale-95">🍪</button>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button id="cookie-upgrade-btn-1" class="btn px-4 py-2 rounded-md font-medium text-xs">Souris (+1 Clic)</button>
+                        <button id="cookie-upgrade-btn-2" class="btn px-4 py-2 rounded-md font-medium text-xs">Ferme (+10 CPS)</button>
+                    </div>
+                    <p id="cookie-info" class="text-sm mt-2">Prix: 10 cookies | Prix: 100 cookies</p>
+                    <p class="mt-2 text-sm">CPS: <span id="cookie-cps">0</span></p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Section des outils utiles -->
+        <section id="outils-utiles" class="card rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-4">🛠️ Outils Utiles</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- Calculatrice -->
+                <div id="calculator-app" class="card p-4 rounded-lg text-center col-span-1">
+                    <h3 class="text-xl font-semibold mb-2">Calculatrice 🧮</h3>
+                    <div id="calculator-display" class="bg-gray-200 dark:bg-gray-700 text-right p-4 rounded-md font-mono text-2xl mb-4 overflow-x-auto">0</div>
+                    <div class="grid grid-cols-4 gap-2">
+                        <button class="btn px-4 py-2 rounded-md operator" data-value="(">(</button>
+                        <button class="btn px-4 py-2 rounded-md operator" data-value=")">)</button>
+                        <button class="btn px-4 py-2 rounded-md operator" data-value="%">%</button>
+                        <button class="btn px-4 py-2 rounded-md operator" data-value="C">C</button>
+
+                        <button class="btn px-4 py-2 rounded-md number" data-value="7">7</button>
+                        <button class="btn px-4 py-2 rounded-md number" data-value="8">8</button>
+                        <button class="btn px-4 py-2 rounded-md number" data-value="9">9</button>
+                        <button class="btn px-4 py-2 rounded-md operator" data-value="/">/</button>
+
+                        <button class="btn px-4 py-2 rounded-md number" data-value="4">4</button>
+                        <button class="btn px-4 py-2 rounded-md number" data-value="5">5</button>
+                        <button class="btn px-4 py-2 rounded-md number" data-value="6">6</button>
+                        <button class="btn px-4 py-2 rounded-md operator" data-value="*">*</button>
+
+                        <button class="btn px-4 py-2 rounded-md number" data-value="1">1</button>
+                        <button class="btn px-4 py-2 rounded-md number" data-value="2">2</button>
+                        <button class="btn px-4 py-2 rounded-md number" data-value="3">3</button>
+                        <button class="btn px-4 py-2 rounded-md operator" data-value="-">-</button>
+
+                        <button class="btn px-4 py-2 rounded-md number" data-value="0">0</button>
+                        <button class="btn px-4 py-2 rounded-md number" data-value=".">.</button>
+                        <button class="btn px-4 py-2 rounded-md operator" data-value="=">=</button>
+                        <button class="btn px-4 py-2 rounded-md operator" data-value="+">+</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Section des choses fun -->
+        <section id="fun-stuff" class="card rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-4">✨ Chose Fun</h2>
+            <div class="text-center">
+                <p id="fun-text" class="text-lg mb-4 italic">Clique sur le bouton pour une surprise !</p>
+                <button id="fun-btn" class="btn px-6 py-2 rounded-full font-medium">Générer une blague ! 😂</button>
+            </div>
+        </section>
+
+        <!-- Section des objectifs -->
+        <section id="objectives" class="card rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-4">🏆 Objectifs</h2>
+            <ul id="objectives-list" class="space-y-2">
+                <!-- Les objectifs seront générés ici par JavaScript -->
+            </ul>
+        </section>
+        
+        <!-- Section des notes -->
+        <section id="notes" class="card rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-4">📝 Notes</h2>
+            <textarea id="notes-area" class="w-full h-40 p-4 rounded-md border text-gray-800 dark:text-gray-800 focus:outline-none focus:ring-2 focus:ring-accent-color resize-none" placeholder="Écris tes notes ici..."></textarea>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 dark:bg-gray-900 text-white dark:text-gray-300 text-center py-4">
+        <p>&copy; 2024 AtadeRush. Tous droits réservés.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // =========================================================================
+            //  VARIABLES GLOBALES ET INITIALISATION
+            // =========================================================================
+
+            // On sélectionne tous les éléments clés de la page
+            const body = document.body;
+            const themeButtons = document.querySelectorAll('.theme-btn');
+            const notesArea = document.getElementById('notes-area');
+            const objectivesList = document.getElementById('objectives-list');
+
+            // Données de l'application
+            let appData = {
+                theme: 'light',
+                notes: '',
+                objectives: [
+                    { id: 'pendu-partie', text: 'Jouer 3 parties de Pendu', goal: 3, current: 0 },
+                    { id: 'morpion-partie', text: 'Jouer 3 parties de Morpion', goal: 3, current: 0 },
+                    { id: 'trouve-chiffre-partie', text: 'Trouver le chiffre 3 fois', goal: 3, current: 0 },
+                    { id: 'cookie-clicker-clic', text: 'Cliquer 100 fois sur le cookie', goal: 100, current: 0 },
+                    { id: 'calculatrice-calcul', text: 'Faire 5 calculs', goal: 5, current: 0 },
+                    { id: 'changer-theme', text: 'Changer le thème 5 fois', goal: 5, current: 0 },
+                ],
+                hangman: {
+                    word: '',
+                    guessedLetters: [],
+                    wrongGuesses: 0,
+                    wordList: ['JAVASCRIPT', 'TAILWIND', 'PROGRAMMATION', 'DEVELOPPEUR', 'ORDINATEUR', 'FONCTION', 'ALGORITHME', 'APPLICATION', 'INTERFACE'],
+                },
+                morpion: {
+                    board: ['', '', '', '', '', '', '', '', ''],
+                    currentPlayer: 'X',
+                    gameActive: true,
+                },
+                guessNumber: {
+                    secretNumber: 0,
+                    attempts: 0,
+                    gameActive: true,
+                },
+                cookieClicker: {
+                    count: 0,
+                    cps: 0,
+                    upgrade1Cost: 10,
+                    upgrade2Cost: 100,
+                },
+            };
+
+            const funStuffJokes = [
+                "Qu'est-ce qui est jaune et qui attend ? Jonathan !",
+                "C'est l'histoire d'un schtroumpf qui tombe, il se fait un bleu.",
+                "Pourquoi les poissons vivent-ils dans l'eau salée ? Parce que le poivre, ça les fait éternuer !",
+                "Que dit une feuille qui tombe ? 'Je l'ai fait, je l'ai fait !'"
+            ];
+
+            // Fonctions pour gérer le stockage local
+            function saveAppData() {
+                localStorage.setItem('funWebsiteAppData', JSON.stringify(appData));
+            }
+
+            function loadAppData() {
+                const savedData = localStorage.getItem('funWebsiteAppData');
+                if (savedData) {
+                    appData = JSON.parse(savedData);
+                }
+            }
+
+            // =========================================================================
+            //  FONCTIONS DE MISE À JOUR DE L'UI
+            // =========================================================================
+
+            function updateUI() {
+                // Mettre à jour le thème
+                setTheme(appData.theme, false);
+
+                // Mettre à jour les notes
+                notesArea.value = appData.notes;
+
+                // Mettre à jour les objectifs
+                renderObjectives();
+
+                // Mettre à jour l'état des jeux si nécessaire
+                renderHangman();
+                renderCookieClicker();
+            }
+
+            // =========================================================================
+            //  LOGIQUE DES THÈMES
+            // =========================================================================
+
+            function setTheme(theme, isUserAction = true) {
+                if (body.dataset.theme === theme) return; // Évite les mises à jour inutiles
+
+                // Supprimer la classe 'active' des anciens boutons
+                themeButtons.forEach(btn => btn.classList.remove('active'));
+
+                // Ajouter la classe 'active' au bouton du thème actuel
+                const activeBtn = document.querySelector(`[data-theme="${theme}"]`);
+                if (activeBtn) {
+                    activeBtn.classList.add('active');
+                }
+
+                // Appliquer le thème au corps de la page
+                body.dataset.theme = theme;
+                appData.theme = theme;
+
+                // Si l'utilisateur change le thème, on met à jour l'objectif
+                if (isUserAction) {
+                    updateObjective('changer-theme', 1);
+                }
+
+                saveAppData();
+            }
+
+            themeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    setTheme(button.dataset.theme);
+                });
+            });
+
+            // =========================================================================
+            //  LOGIQUE DES OBJECTIFS
+            // =========================================================================
+
+            function updateObjective(id, amount) {
+                const objective = appData.objectives.find(obj => obj.id === id);
+                if (objective && objective.current < objective.goal) {
+                    objective.current += amount;
+                    if (objective.current >= objective.goal) {
+                        alert(`Objectif atteint : "${objective.text}" ! 🎉`);
+                    }
+                    renderObjectives();
+                    saveAppData();
+                }
+            }
+
+            function renderObjectives() {
+                objectivesList.innerHTML = '';
+                appData.objectives.forEach(obj => {
+                    const li = document.createElement('li');
+                    const isCompleted = obj.current >= obj.goal;
+                    li.className = `flex items-center space-x-2 p-2 rounded-md ${isCompleted ? 'bg-green-100 text-green-800' : 'bg-gray-100 dark:bg-gray-700'}`;
+                    li.innerHTML = `
+                        <i class="fas fa-${isCompleted ? 'check-circle' : 'circle'} text-lg ${isCompleted ? 'text-green-500' : 'text-gray-400'}"></i>
+                        <span>${obj.text}</span>
+                        <span class="ml-auto text-sm font-semibold">${obj.current} / ${obj.goal}</span>
+                    `;
+                    objectivesList.appendChild(li);
+                });
+            }
+
+            // =========================================================================
+            //  MINI-JEU : PENDU
+            // =========================================================================
+
+            const hangmanWordDisplay = document.getElementById('hangman-word');
+            const hangmanWrongLettersDisplay = document.getElementById('hangman-wrong-letters');
+            const hangmanDrawing = document.getElementById('hangman-drawing');
+            const hangmanInput = document.getElementById('hangman-input');
+            const hangmanGuessBtn = document.getElementById('hangman-guess-btn');
+            const hangmanMessage = document.getElementById('hangman-message');
+            const hangmanNewGameBtn = document.getElementById('hangman-new-game-btn');
+
+            function drawHangman() {
+                const parts = [
+                    '<svg viewBox="0 0 100 100"><path d="M10 90 L40 90 M25 90 L25 10 L80 10 L80 20" stroke="var(--text-color)" stroke-width="2" fill="none"/></svg>', // Potence
+                    '<circle cx="80" cy="30" r="10" stroke="var(--text-color)" stroke-width="2" fill="none" />', // Tête
+                    '<line x1="80" y1="40" x2="80" y2="60" stroke="var(--text-color)" stroke-width="2" />', // Corps
+                    '<line x1="80" y1="45" x2="60" y2="55" stroke="var(--text-color)" stroke-width="2" />', // Bras G
+                    '<line x1="80" y1="45" x2="100" y2="55" stroke="var(--text-color)" stroke-width="2" />', // Bras D
+                    '<line x1="80" y1="60" x2="65" y2="80" stroke="var(--text-color)" stroke-width="2" />', // Jambe G
+                    '<line x1="80" y1="60" x2="95" y2="80" stroke="var(--text-color)" stroke-width="2" />' // Jambe D
+                ];
+                hangmanDrawing.innerHTML = parts.slice(0, appData.hangman.wrongGuesses).join('');
+            }
+
+            function renderHangman() {
+                hangmanWordDisplay.innerHTML = appData.hangman.word.split('').map(letter => {
+                    return `<span class="inline-block mx-1 w-4 h-6 border-b-2 border-gray-400 text-center uppercase">${appData.hangman.guessedLetters.includes(letter) ? letter : ''}</span>`;
+                }).join('');
+                hangmanWrongLettersDisplay.textContent = `Lettres incorrectes : ${appData.hangman.guessedLetters.filter(l => !appData.hangman.word.includes(l)).join(', ')}`;
+                drawHangman();
+            }
+
+            function checkHangmanWin() {
+                const guessedWord = appData.hangman.word.split('').every(letter => appData.hangman.guessedLetters.includes(letter));
+                if (guessedWord) {
+                    hangmanMessage.textContent = "Félicitations, tu as gagné ! 🎉";
+                    hangmanInput.disabled = true;
+                    hangmanGuessBtn.disabled = true;
+                    hangmanNewGameBtn.classList.remove('hidden');
+                    updateObjective('pendu-partie', 1);
+                } else if (appData.hangman.wrongGuesses >= 7) {
+                    hangmanMessage.textContent = `Tu as perdu ! Le mot était "${appData.hangman.word}". 😭`;
+                    hangmanInput.disabled = true;
+                    hangmanGuessBtn.disabled = true;
+                    hangmanNewGameBtn.classList.remove('hidden');
+                }
+            }
+
+            function handleHangmanGuess() {
+                const guess = hangmanInput.value.toUpperCase();
+                hangmanInput.value = '';
+                if (!guess || appData.hangman.guessedLetters.includes(guess)) {
+                    hangmanMessage.textContent = "Cette lettre a déjà été proposée ou n'est pas valide.";
+                    return;
+                }
+                appData.hangman.guessedLetters.push(guess);
+                if (appData.hangman.word.includes(guess)) {
+                    hangmanMessage.textContent = "Bonne devinette !";
+                } else {
+                    appData.hangman.wrongGuesses++;
+                    hangmanMessage.textContent = "Mauvaise lettre.";
+                }
+                renderHangman();
+                checkHangmanWin();
+                saveAppData();
+            }
+
+            hangmanGuessBtn.addEventListener('click', handleHangmanGuess);
+            hangmanInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    handleHangmanGuess();
+                }
+            });
+            hangmanNewGameBtn.addEventListener('click', () => {
+                startHangmanGame();
+            });
+
+            function startHangmanGame() {
+                appData.hangman.word = appData.hangman.wordList[Math.floor(Math.random() * appData.hangman.wordList.length)];
+                appData.hangman.guessedLetters = [];
+                appData.hangman.wrongGuesses = 0;
+                hangmanInput.disabled = false;
+                hangmanGuessBtn.disabled = false;
+                hangmanMessage.textContent = '';
+                hangmanNewGameBtn.classList.add('hidden');
+                renderHangman();
+                saveAppData();
+            }
+
+            // =========================================================================
+            //  MINI-JEU : MORPION
+            // =========================================================================
+
+            const morpionBoard = document.getElementById('morpion-board');
+            const morpionMessage = document.getElementById('morpion-message');
+            const morpionNewGameBtn = document.getElementById('morpion-new-game-btn');
+            const morpionCells = Array.from(morpionBoard.children);
+
+            const winningConditions = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                [0, 4, 8], [2, 4, 6]
+            ];
+
+            function handleMorpionCellClick(e) {
+                const clickedCell = e.target;
+                const clickedCellIndex = morpionCells.indexOf(clickedCell);
+
+                if (appData.morpion.board[clickedCellIndex] !== '' || !appData.morpion.gameActive) {
+                    return;
+                }
+
+                appData.morpion.board[clickedCellIndex] = appData.morpion.currentPlayer;
+                clickedCell.textContent = appData.morpion.currentPlayer;
+                clickedCell.classList.add('filled', `text-${appData.morpion.currentPlayer === 'X' ? 'blue-500' : 'red-500'}`);
+
+                checkMorpionResult();
+                saveAppData();
+            }
+
+            function checkMorpionResult() {
+                let roundWon = false;
+                for (let i = 0; i < winningConditions.length; i++) {
+                    const winCondition = winningConditions[i];
+                    const a = appData.morpion.board[winCondition[0]];
+                    const b = appData.morpion.board[winCondition[1]];
+                    const c = appData.morpion.board[winCondition[2]];
+
+                    if (a === '' || b === '' || c === '') {
+                        continue;
+                    }
+                    if (a === b && b === c) {
+                        roundWon = true;
+                        break;
+                    }
+                }
+
+                if (roundWon) {
+                    morpionMessage.textContent = `Le joueur ${appData.morpion.currentPlayer} a gagné ! 🎉`;
+                    appData.morpion.gameActive = false;
+                    morpionNewGameBtn.classList.remove('hidden');
+                    updateObjective('morpion-partie', 1);
+                    return;
+                }
+
+                const roundDraw = !appData.morpion.board.includes('');
+                if (roundDraw) {
+                    morpionMessage.textContent = 'Match nul ! 🤝';
+                    appData.morpion.gameActive = false;
+                    morpionNewGameBtn.classList.remove('hidden');
+                    return;
+                }
+
+                appData.morpion.currentPlayer = appData.morpion.currentPlayer === 'X' ? 'O' : 'X';
+                morpionMessage.textContent = `C'est au tour de ${appData.morpion.currentPlayer}`;
+            }
+
+            function startMorpionGame() {
+                appData.morpion.board = ['', '', '', '', '', '', '', '', ''];
+                appData.morpion.currentPlayer = 'X';
+                appData.morpion.gameActive = true;
+                morpionMessage.textContent = 'C\'est au tour de X';
+                morpionNewGameBtn.classList.add('hidden');
+                morpionCells.forEach(cell => {
+                    cell.textContent = '';
+                    cell.classList.remove('filled', 'text-blue-500', 'text-red-500');
+                });
+                saveAppData();
+            }
+
+            morpionCells.forEach(cell => cell.addEventListener('click', handleMorpionCellClick));
+            morpionNewGameBtn.addEventListener('click', startMorpionGame);
+
+            // =========================================================================
+            //  MINI-JEU : TROUVE LE CHIFFRE
+            // =========================================================================
+
+            const guessInput = document.getElementById('guess-input');
+            const guessBtn = document.getElementById('guess-btn');
+            const guessMessage = document.getElementById('guess-message');
+            const guessNewGameBtn = document.getElementById('guess-new-game-btn');
+
+            function checkGuessNumber() {
+                const userGuess = parseInt(guessInput.value, 10);
+                if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
+                    guessMessage.textContent = "Veuillez entrer un nombre valide entre 1 et 100.";
+                    return;
+                }
+
+                appData.guessNumber.attempts++;
+                if (userGuess === appData.guessNumber.secretNumber) {
+                    guessMessage.textContent = `Bravo ! Tu as trouvé le nombre en ${appData.guessNumber.attempts} tentatives ! 🎉`;
+                    appData.guessNumber.gameActive = false;
+                    guessInput.disabled = true;
+                    guessBtn.disabled = true;
+                    guessNewGameBtn.classList.remove('hidden');
+                    updateObjective('trouve-chiffre-partie', 1);
+                } else if (userGuess > appData.guessNumber.secretNumber) {
+                    guessMessage.textContent = "C'est plus petit ! 📉";
+                } else {
+                    guessMessage.textContent = "C'est plus grand ! 📈";
+                }
+                saveAppData();
+            }
+
+            function startGuessNumberGame() {
+                appData.guessNumber.secretNumber = Math.floor(Math.random() * 100) + 1;
+                appData.guessNumber.attempts = 0;
+                appData.guessNumber.gameActive = true;
+                guessInput.disabled = false;
+                guessBtn.disabled = false;
+                guessInput.value = '';
+                guessMessage.textContent = '';
+                guessNewGameBtn.classList.add('hidden');
+                saveAppData();
+            }
+
+            guessBtn.addEventListener('click', checkGuessNumber);
+            guessInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    checkGuessNumber();
+                }
+            });
+            guessNewGameBtn.addEventListener('click', startGuessNumberGame);
+
+            // =========================================================================
+            //  MINI-JEU : COOKIE CLICKER
+            // =========================================================================
+
+            const cookieBtn = document.getElementById('cookie-btn');
+            const cookieCountDisplay = document.getElementById('cookie-count');
+            const cookieCpsDisplay = document.getElementById('cookie-cps');
+            const upgrade1Btn = document.getElementById('cookie-upgrade-btn-1');
+            const upgrade2Btn = document.getElementById('cookie-upgrade-btn-2');
+
+            function updateCookieDisplay() {
+                cookieCountDisplay.textContent = appData.cookieClicker.count;
+                cookieCpsDisplay.textContent = appData.cookieClicker.cps;
+            }
+
+            function clickCookie() {
+                appData.cookieClicker.count++;
+                updateCookieDisplay();
+                updateObjective('cookie-clicker-clic', 1);
+                saveAppData();
+            }
+
+            function buyUpgrade1() {
+                if (appData.cookieClicker.count >= appData.cookieClicker.upgrade1Cost) {
+                    appData.cookieClicker.count -= appData.cookieClicker.upgrade1Cost;
+                    appData.cookieClicker.cps += 1;
+                    appData.cookieClicker.upgrade1Cost = Math.floor(appData.cookieClicker.upgrade1Cost * 1.5);
+                    upgrade1Btn.textContent = `Souris (+1 CPS) - ${appData.cookieClicker.upgrade1Cost} cookies`;
+                    updateCookieDisplay();
+                    saveAppData();
+                }
+            }
+            function buyUpgrade2() {
+                if (appData.cookieClicker.count >= appData.cookieClicker.upgrade2Cost) {
+                    appData.cookieClicker.count -= appData.cookieClicker.upgrade2Cost;
+                    appData.cookieClicker.cps += 10;
+                    appData.cookieClicker.upgrade2Cost = Math.floor(appData.cookieClicker.upgrade2Cost * 1.5);
+                    upgrade2Btn.textContent = `Ferme (+10 CPS) - ${appData.cookieClicker.upgrade2Cost} cookies`;
+                    updateCookieDisplay();
+                    saveAppData();
+                }
+            }
+
+            cookieBtn.addEventListener('click', clickCookie);
+            upgrade1Btn.addEventListener('click', buyUpgrade1);
+            upgrade2Btn.addEventListener('click', buyUpgrade2);
+
+            setInterval(() => {
+                if (appData.cookieClicker.cps > 0) {
+                    appData.cookieClicker.count += appData.cookieClicker.cps;
+                    updateCookieDisplay();
+                    saveAppData();
+                }
+            }, 1000);
+
+            function renderCookieClicker() {
+                updateCookieDisplay();
+                upgrade1Btn.textContent = `Souris (+1 CPS) - ${appData.cookieClicker.upgrade1Cost} cookies`;
+                upgrade2Btn.textContent = `Ferme (+10 CPS) - ${appData.cookieClicker.upgrade2Cost} cookies`;
+            }
+
+            // =========================================================================
+            //  OUTIL : CALCULATRICE
+            // =========================================================================
+
+            const calculatorDisplay = document.getElementById('calculator-display');
+            let currentExpression = '';
+            let resultCalculated = false;
+
+            document.querySelectorAll('#calculator-app .btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const value = button.dataset.value;
+                    handleCalculatorInput(value);
+                });
+            });
+
+            function handleCalculatorInput(value) {
+                if (value === 'C') {
+                    currentExpression = '';
+                    calculatorDisplay.textContent = '0';
+                    resultCalculated = false;
+                } else if (value === '=') {
+                    try {
+                        const result = eval(currentExpression);
+                        calculatorDisplay.textContent = result;
+                        currentExpression = result.toString();
+                        resultCalculated = true;
+                        updateObjective('calculatrice-calcul', 1);
+                    } catch (e) {
+                        calculatorDisplay.textContent = 'Erreur';
+                        currentExpression = '';
+                        resultCalculated = true;
+                    }
+                } else {
+                    if (resultCalculated) {
+                        currentExpression = value;
+                        resultCalculated = false;
+                    } else {
+                        currentExpression += value;
+                    }
+                    calculatorDisplay.textContent = currentExpression;
+                }
+                saveAppData();
+            }
+
+
+            // =========================================================================
+            //  CHOSE FUN : BLAGUE
+            // =========================================================================
+
+            const funBtn = document.getElementById('fun-btn');
+            const funText = document.getElementById('fun-text');
+
+            funBtn.addEventListener('click', () => {
+                const randomIndex = Math.floor(Math.random() * funStuffJokes.length);
+                funText.textContent = funStuffJokes[randomIndex];
+            });
+
+            // =========================================================================
+            //  NOTES
+            // =========================================================================
+
+            notesArea.addEventListener('input', () => {
+                appData.notes = notesArea.value;
+                saveAppData();
+            });
+
+            // =========================================================================
+            //  DÉMARRAGE DE L'APPLICATION
+            // =========================================================================
+            loadAppData();
+            updateUI();
+            startHangmanGame();
+            startMorpionGame();
+            startGuessNumberGame();
+
+        });
+    </script>
+</body>
+</html>
